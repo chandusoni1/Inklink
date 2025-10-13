@@ -1,23 +1,28 @@
 const express = require("express");
 const router = express.Router();
 const Blog = require("../models/Blog");
-// const path = require("path"); 
 const multer = require("multer");
+const path = require("path");
+const storage = multer.memoryStorage(); // ✅ store file in memory
+const upload = multer({ storage });
+
 const { OAuth2Client } = require("google-auth-library");
+const cloudinary = require("../utils/cloudinary");
 
 const client = new OAuth2Client("");
 
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "uploads/");
+//   },
+//   filename: function (req, file, cb) {
+//      const ext = cb(null, Date.now() + path.extname(file.originalname || "jpg"));
+//      cb(null, `${Date.now()}${ext}`);
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
 // Get all blog posts
 router.get("/readall", async (req, res) => {
@@ -33,9 +38,7 @@ router.get("/read/:id", async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
-    res.json(blog)
-
-
+    res.json(blog);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -44,21 +47,29 @@ router.get("/read/:id", async (req, res) => {
 /// Blog create route
 router.post("/create", upload.single("image"), async (req, res) => {
   try {
-    console.log("Request Body:", req.body);
-    console.log("Uploaded File:", req.file);
-
     const { title, author, content } = req.body;
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-    const newBlog = new Blog({
-      title,
-      author,
-      content,
-      imageUrl,
-    });
+    let imageUrl = null;
 
-    await newBlog.save();
-    res.status(201).json({ message: "Blog created successfully!" });
+    if (req.file) {
+      const result = await cloudinary.uploader.upload_stream(
+        { resource_type: "image" },
+        async (error, result) => {
+          if (error) throw error;
+          imageUrl = result.secure_url;
+
+          const newBlog = new Blog({ title, author, content, imageUrl });
+          await newBlog.save();
+          res.status(201).json({ message: "Blog created successfully!" });
+        }
+      );
+
+      result.end(req.file.buffer); // ✅ send buffer to Cloudinary
+    } else {
+      const newBlog = new Blog({ title, author, content });
+      await newBlog.save();
+      res.status(201).json({ message: "Blog created without image" });
+    }
   } catch (error) {
     console.error("Error creating blog:", error.message);
     res.status(500).json({ message: "Server error: " + error.message });
@@ -106,8 +117,3 @@ router.post("/google", async (req, res) => {
 });
 
 module.exports = router;
-
-
-
-
-

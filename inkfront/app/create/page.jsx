@@ -1,13 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 
 function BlogForm() {
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const fileInputRef = useRef(null);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +23,7 @@ function BlogForm() {
       formData.append("content", content);
       if (image) formData.append("image", image);
 
-      const response = await fetch("http://localhost:5000/api/blogs/create", {
+      const response = await fetch(process.env.NEXT_PUBLIC_CREATE, {
         method: "POST",
         body: formData,
       });
@@ -31,7 +33,8 @@ function BlogForm() {
         setAuthor("");
         setTitle("");
         setContent("");
-        setImage(null);
+        setImage("");
+        if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
         const errorData = await response.json();
         setMessage(`❌ Failed to publish: ${errorData.message || "Server error"}`);
@@ -75,6 +78,8 @@ function BlogForm() {
       <input
         type="file"
         accept="image/*"
+        ref={fileInputRef}
+
         onChange={(e) => setImage(e.target.files[0])}
         className="w-full border border-gray-300 rounded px-3 py-2 text-white file:text-white file:bg-blue-600 file:border-none file:px-4 file:py-2 file:rounded bg-transparent"
       />

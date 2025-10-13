@@ -24,7 +24,7 @@ export default function BlogListPage() {
 
   const fetchBlogs = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/blogs/readall");
+      const res = await fetch(process.env.NEXT_PUBLIC_READALL);
       const data = await res.json();
       setBlogs(data);
       setLoading(false);
@@ -37,7 +37,7 @@ export default function BlogListPage() {
 
   const handleLike = async (blogId) => {
     try {
-      await fetch(`http://localhost:5000/api/blogs/${blogId}/like`, {
+      await fetch(process.env.NEXT_PUBLIC_LIKE, {
         method: "POST",
       });
       console.log("Liked blog:", blogId);
@@ -59,7 +59,7 @@ export default function BlogListPage() {
 
   const handleFollow = async (authorId) => {
     try {
-      await fetch(`http://localhost:5000/api/users/${authorId}/follow`, {
+      await fetch(process.env.NEXT_PUBLIC_FOLLOW, {
         method: "POST",
       });
       console.log("Followed author:", authorId);
@@ -70,7 +70,7 @@ export default function BlogListPage() {
 
   const handleDelete = async (blogId) => {
     try {
-      await fetch(`http://localhost:5000/api/blogs/remove/${blogId}`, {
+      await fetch(process.env.NEXT_PUBLIC_DELETE, {
         method: "DELETE",
       });
       setBlogs((prev) => prev.filter((blog) => blog._id !== blogId));
