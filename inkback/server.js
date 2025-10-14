@@ -14,7 +14,7 @@ console.log("🔑 Mongo URI:", process.env.MONGO_URL);
 
 // Middleware
 app.use(cors({
-  origin: "http://localhost:3000", // frontend origin
+  origin: `https://inklink-alsx.vercel.app/`, // frontend origin
   credentials: true,
 }));
 app.use(express.json());
