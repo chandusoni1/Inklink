@@ -23,7 +23,7 @@ function BlogForm() {
       formData.append("content", content);
       if (image) formData.append("image", image);
 
-      const response = await fetch(process.env.NEXT_PUBLIC_CREATE, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/blogs/create`, {
         method: "POST",
         body: formData,
       });

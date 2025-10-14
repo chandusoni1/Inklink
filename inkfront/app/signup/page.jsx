@@ -33,8 +33,8 @@ export default function SignPage() {
     setMessage("");
 
     const url = isNewUser
-      ? "http://localhost:5000/api/auth/register"
-      : "http://localhost:5000/api/auth/login";
+      ? `${process.env.NEXT_PUBLIC_BACKEND_URL}api/auth/register`
+      : `${process.env.NEXT_PUBLIC_BACKEND_URL}api/auth/login`;
 
     const payload = isNewUser
       ? formData

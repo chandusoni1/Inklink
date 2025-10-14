@@ -24,7 +24,7 @@ export default function BlogListPage() {
 
   const fetchBlogs = async () => {
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_READALL);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/blogs/readall`);
       const data = await res.json();
       setBlogs(data);
       setLoading(false);
@@ -37,7 +37,7 @@ export default function BlogListPage() {
 
   const handleLike = async (blogId) => {
     try {
-      await fetch(process.env.NEXT_PUBLIC_LIKE, {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/blogs/${blogId}/like`, {
         method: "POST",
       });
       console.log("Liked blog:", blogId);
@@ -57,20 +57,27 @@ export default function BlogListPage() {
     alert("Blog link copied to clipboard!");
   };
 
-  const handleFollow = async (authorId) => {
-    try {
-      await fetch(process.env.NEXT_PUBLIC_FOLLOW, {
-        method: "POST",
-      });
-      console.log("Followed author:", authorId);
-    } catch (err) {
-      console.error("Failed to follow author", err);
-    }
-  };
+// const handleFollow = async (authorId) => {
+//   const followerId =  localStorage.getItem("userId"); // 👈 Replace with logged-in user's ID
 
+//   try {
+//     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}users/${authorId}/follow`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ followerId }),
+//     });
+
+//     const data = await res.json();
+//     console.log("Follow response:", data);
+//   } catch (err) {
+//     console.error("Failed to follow author", err.message);
+//   }
+// };
   const handleDelete = async (blogId) => {
     try {
-      await fetch(process.env.NEXT_PUBLIC_DELETE, {
+      await fetch(`${process.env.NEXT_PUBLIC_CREATE}api/blogs/remove/${blogId}`, {
         method: "DELETE",
       });
       setBlogs((prev) => prev.filter((blog) => blog._id !== blogId));
@@ -78,13 +85,24 @@ export default function BlogListPage() {
       console.error("Failed to delete blog", err);
     }
   };
+//get by id for update 
+  const handleUpdate = async (blogId) => {// dikkat
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/blogs/${blogId}`);
+    if (!res.ok) throw new Error("Failed to fetch blog");
+    console.log("dabgya")
 
-  const handleUpdate = (blogId) => {
+    const blogData = await res.json();
+
+    // Optionally store in localStorage or context
+    localStorage.setItem("selectedBlog", JSON.stringify(blogData));
+
     router.push(`/read/${blogId}`);
-  };
-
-  if (loading) return <p className="text-center">Loading blogs...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
+  } catch (err) {
+    console.error("Error fetching blog:", err);
+    alert("Blog not found or server error.");
+  }
+};
 
   return (
     <div className="p-6 max-w-5xl mx-auto text-black">
@@ -133,7 +151,7 @@ export default function BlogListPage() {
                   <FaUserPlus /> Follow
                 </button>
 
-                <button className="flex items-center gap-1 hover:text-yellow-500">
+                <button onClick={()=>handleUpdate(blog._id)} className="flex items-center gap-1 hover:text-yellow-500">
                   <FaEdit /> Update
                 </button>
 
@@ -143,6 +161,7 @@ export default function BlogListPage() {
                 >
                   <FaTrash /> Delete
                 </button>
+               
               </div>
             </div>
           ))}
