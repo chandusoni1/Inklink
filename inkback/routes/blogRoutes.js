@@ -24,6 +24,11 @@ const client = new OAuth2Client("");
 
 // const upload = multer({ storage: storage });
 
+router.get("/", async (req, res) => {
+  const blogs = await Blog.find();//ye line add hua 
+  res.json(blogs);
+});
+
 // Get all blog posts
 router.get("/readall", async (req, res) => {
   try {

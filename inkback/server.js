@@ -13,10 +13,17 @@ console.log("🔥 server.js loaded");
 console.log("🔑 Mongo URI:", process.env.MONGO_URL);
 
 // Middleware
-app.use(cors({
-  origin: `https://inklink-alsx.vercel.app/`, // frontend origin
+const corsOptions = {
+  origin: [
+    "https://inklink-alsx.vercel.app", // ✅ your frontend
+    "http://localhost:3000",           // ✅ local dev,//ye section add hua hai
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-}));
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/uploads", express.static("uploads")); // to serve uploaded files
 
