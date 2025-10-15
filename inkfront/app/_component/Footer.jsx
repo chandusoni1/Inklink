@@ -26,7 +26,7 @@ function Footer() {
           <ul className="text-sm space-y-2">
             <li><a href="/" className="hover:underline">Home</a></li>
             <li><a href="/about" className="hover:underline">About</a></li>
-            <li><a href="/blogs" className="hover:underline">Blogs</a></li>
+            <li><a href="/blog" className="hover:underline">Blogs</a></li>
             <li><a href="/contact" className="hover:underline">Contact</a></li>
           </ul>
         </div>
