@@ -16,6 +16,16 @@ function BlogForm() {
     setLoading(true);
     setMessage("");
 
+      // ✅ Check for auth token before allowing submission
+  const token = localStorage.getItem("authToken"); // Adjust if you're using cookies or next-auth
+  if (!token) {
+    alert("⚠️ You must be signed in to publish a blog.");
+    window.location.href = "/signup"; // 🔁 Redirect to signup page
+    setLoading(false);
+    return;
+  }
+
+
     try {
       const formData = new FormData();
       formData.append("author", author);
@@ -26,6 +36,10 @@ function BlogForm() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/blogs/create`, {
         method: "POST",
         body: formData,
+          headers: {
+        Authorization: `Bearer ${token}`, // ✅ Include token if backend expects it
+      },
+
       });
 
       if (response.ok) {
