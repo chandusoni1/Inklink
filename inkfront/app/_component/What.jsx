@@ -16,22 +16,22 @@ function Why() {
                 title: "🌍 Express Freely",
                 desc: "Write about anything and everything — your voice matters.",
               },
-              {
-                title: "🚀 Share to Grow",
-                desc: "Connect with readers who love your vibe and build a fanbase.",
-              },
+              // {
+              //   title: "🚀 Share to Grow",
+              //   desc: "Connect with readers who love your vibe and build a fanbase.",
+              // },
               {
                 title: "🧠 Learn & Explore",
                 desc: "Explore topics like Tech, Lifestyle, AI, and Self Growth.",
               },
-              {
-                title: "💬 Community Feedback",
-                desc: "Get comments, likes, and support from real users.",
-              },
-              {
-                title: "🎯 Personalized Dashboard",
-                desc: "Track your posts, stats, and followers all in one place.",
-              },
+              // {
+              //   title: "💬 Community Feedback",
+              //   desc: "Get comments, likes, and support from real users.",
+              // },
+              // {
+              //   title: "🎯 Personalized Dashboard",
+              //   desc: "Track your posts, stats, and followers all in one place.",
+              // },
               {
                 title: "📱 Mobile Ready",
                 desc: "Write and read blogs on any device, anytime, anywhere.",

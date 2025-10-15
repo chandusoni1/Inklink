@@ -9,7 +9,7 @@ const upload = multer({ storage });
 const { OAuth2Client } = require("google-auth-library");
 const cloudinary = require("../utils/cloudinary");
 
-const client = new OAuth2Client("");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
@@ -39,7 +39,7 @@ router.get("/readall", async (req, res) => {
   }
 });
 // get by id
-router.get("/read/:id", async (req, res) => {
+router.get("/read/:id", async (req, res) => {//dikkat
   try {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
@@ -48,6 +48,41 @@ router.get("/read/:id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
+
+//follow controller
+
+
+const User = require("../models/User"); // adjust path
+
+router.post("/users/:authorId/follow", async (req, res) => {
+  try {
+    const { authorId } = req.params;
+    const { followerId } = req.body;
+
+    if (!followerId) return res.status(400).json({ message: "Missing follower ID" });
+    if (authorId === followerId) return res.status(400).json({ message: "Cannot follow yourself" });
+
+    const author = await User.findById(authorId);
+    const follower = await User.findById(followerId);
+
+    if (!author || !follower) return res.status(404).json({ message: "User not found" });
+
+    if (author.followers.includes(followerId)) {
+      return res.status(400).json({ message: "Already following" });
+    }
+
+    author.followers.push(followerId);
+    await author.save();
+
+    res.status(200).json({ message: "Followed successfully", author });
+  } catch (error) {
+    console.error("Follow error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 /// Blog create route
 router.post("/create", upload.single("image"), async (req, res) => {
@@ -91,6 +126,8 @@ router.delete("/remove/:id", async (req, res) => {
   }
 });
 
+
+//signin
 router.post("/google", async (req, res) => {
   const { token } = req.body;
 
