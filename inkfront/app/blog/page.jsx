@@ -26,6 +26,7 @@ export default function BlogListPage() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/blogs/readall`);
       const data = await res.json();
+      
       setBlogs(data);
       setLoading(false);
     } catch (err) {
@@ -144,7 +145,7 @@ export default function BlogListPage() {
                   <FaShareAlt /> Share
                 </button>
 
-                <button
+                {/* <button
                   onClick={() => handleFollow(blog.author?._id)}
                   className="flex items-center gap-1 hover:text-indigo-500"
                 >
@@ -160,7 +161,7 @@ export default function BlogListPage() {
                   className="flex items-center gap-1 hover:text-red-700"
                 >
                   <FaTrash /> Delete
-                </button>
+                </button> */}
                
               </div>
             </div>
