@@ -154,14 +154,14 @@ export default function BlogListPage() {
 
                 <button onClick={()=>handleUpdate(blog._id)} className="flex items-center gap-1 hover:text-yellow-500">
                   <FaEdit /> Update
-                </button>
+                </button>*/}
 
                 <button
                   onClick={() => handleDelete(blog._id)}
                   className="flex items-center gap-1 hover:text-red-700"
                 >
                   <FaTrash /> Delete
-                </button> */}
+                </button> 
                
               </div>
             </div>
